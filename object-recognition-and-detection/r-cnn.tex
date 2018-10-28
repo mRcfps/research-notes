@@ -1,0 +1,143 @@
+\documentclass[a4paper,12pt]{article}
+  \title{Rich feature hierarchies for accurate object detection and semantic segmentation}
+  \author{Ross Girshick \emph{et al.}}
+  \date{2014}
+
+\begin{document}
+  \maketitle
+
+\section{Contributions}
+
+\begin{itemize}
+  \item Solve the CNN localization problem by operating within the ''recognition using regions'' paradigm.
+  \item Show that \emph{supervised} pre-training on a large auxiliary dataset (ILSVRC), followed by domain-specfic fine-tuning on a small dataset (PASCAL), is an effective paradigm for learning high-capacity CNNs when data is scarce.
+\end{itemize}
+
+\section{Object detection with R-CNN}
+
+\subsection{Module design}
+
+Our object detection system consists of three modules.
+
+\begin{enumerate}
+  \item The first generates category-independent region proposals. These proposals define the set of candidate detections available to our detector.
+  \item The second module is a large convolutional neural network that extracts a fixed-length feature vector from each region.
+  \item The third module is a set of class-specific linear SVMs.
+\end{enumerate}
+
+\subsubsection{Region proposals}
+
+We use \textbf{selective search} here.
+
+\begin{itemize}
+  \item Extract around 2000 region proposals.
+  \item Use ''fast mode'' in all experiments.
+\end{itemize}
+
+\subsubsection{Feature extraction}
+
+The CNN is the \emph{Caffe} implementation based on \textbf{AlexNet}. Features are computed by forward propagating a mean-subtracted $227 \times 227$ RGB image through five convolutional layers and two fully connected layers.
+
+Steps of pre-processing region proposals:
+
+\begin{itemize}
+  \item Dilate the tight bounding box so that at the warped size there are exactly $p$ pixels of warped image context around the original box (we use $p = 16$).
+  \item Warp all pixels in a tight bounding box around it to the required size ($227 \times 227$).
+\end{itemize}
+
+\subsubsection{Classification}
+
+For each class, we score each extracted feature vector using the SVM trained for that class. Given all scored regions in an image, we apply a \textbf{greedy non-maximum suppression} (for each class independently) that \emph{rejects} a region if it has an \emph{intersection-over-union} (IoU) overlap with a higher scoring selected region larger than a learned threshold.
+
+\subsection{Run-time analysis}
+
+Two properties make detection efficient:
+
+\begin{enumerate}
+  \item All CNN parameters are shared across all categories.
+  \item The feature vectors computed by the CNN are low-dimensional (4k).
+\end{enumerate}
+
+The result of such sharing is that the time spent computing region proposals and features (13s/image on a GPU or 53s/image on a CPU) is amortized over all classes.
+
+\subsection{Training}
+
+\subsubsection{Supervised pre-training}
+
+We discriminatively pre-trained the CNN on a large auxiliary dataset (ILSVRC2012 classification) using \emph{image-level annotations} only (bounding-box labels are not available for this data).
+
+\subsubsection{Domain-specific fine-tuning}
+
+We continue training of the CNN parameters using only warped region proposals:
+
+\begin{enumerate}
+  \item Replace the original classfication layer with a randomly initialized classification layer.
+  \item Use smaller learning rate (0.001) to avoid clobbering the initialization.
+\end{enumerate}
+
+\subsubsection{Object category classifiers}
+
+Carefully choose IoU overlap threshold (0.3, selected by \emph{grid search}), below which regions are defined as negatives (others positives).
+
+Once features are extracted and training labels are applied, we optimize one linear SVM per class. Since the training data is too large to fit in memory, we adopt the standard hard negative mining method.
+
+\subsection{Results}
+
+\begin{itemize}
+  \item 53.7 mAP on VOC 2010 test.
+  \item 53.3 mAP on VOC 2011/12 test.
+  \item 31.4 mAP on the ILSVRC 2013 competition.
+\end{itemize}
+
+\section{Visualization, ablation, and modes of error}
+
+\subsection{Visualizing learned features}
+
+We propose a simple (and complementary) non-parametric method that directly shows what the network learned.
+
+\begin{enumerate}
+  \item Single out a particular unit (feature) in the network and use it as if it were an object detector in its own right.
+  \item Compute the unit’s activations on a large set of held-out region proposals (about 10 million).
+  \item Sort the proposals from highest to lowest activation.
+  \item Perform non-maximum suppression.
+  \item Display the top-scoring regions.
+\end{enumerate}
+
+The network appears to learn a representation that combines a small number of class-tuned features together with a distributed representation of shape, texture, color, and material properties.
+
+\subsection{Ablation studies}
+
+\subsubsection{Performance layer-by-layer, without fine-tuning}
+
+We start by looking at results from the CNN \emph{without fine-tuning} on PASCAL, i.e. all CNN parameters were pre-trained on ILSVRC 2012 only.
+
+\begin{itemize}
+  \item Features from fc\textsubscript{7} generalize worse than features from fc\textsubscript{6}.
+  \item Removing \emph{both} fc\textsubscript{7} and fc\textsubscript{6} produces quite good results.
+\end{itemize}
+
+Much of the CNN’s representational power comes from its convolutional layers, rather than from the much larger densely connected layers.
+
+\subsubsection{Performance layer-by-layer, with fine-tuning}
+
+We now look at results from our CNN after having fine-tuned its parameters on VOC 2007 trainval.
+
+The boost from fine-tuning (increases mAP by 8.0 percentage points to 54.2\%) is much larger for fc\textsubscript{6} and fc\textsubscript{7} than for pool\textsubscript{5} ,which suggests that the pool\textsubscript{5} features learned from ImageNet are general and that most of the improvement is gained from learning domain-specific non-linear classifiers on top of them.
+
+\subsubsection{Comparison to recent feature learning methods}
+
+All R-CNN variants strongly outperform the three DPM baselines (DPM V5, DPM ST, DPM HSC), including the two that use feature learning.
+
+\subsection{Network architectures}
+
+We have found that the choice of architecture has a large effect on R-CNN detection performance. R-CNN with \textbf{VGG16} substantially outperforms R-CNN with \textbf{AlexNet}, increasing mAP from 58.5\% to 66.0\%.
+
+However, the forward pass of VGG16 taking roughly 7 times longer than AlexNet.
+
+\subsection{Detection error analysis and bounding-box regression}
+
+We applied the excellent detection analysis tool from Hoiem et al. in order to reveal our method’s error modes, understand how fine-tuning changes them, and to see how our error types compare with DPM.
+
+Based on the error analysis, we implemented a simple method inspired by DPM to reduce localization errors.
+
+\end{document}
