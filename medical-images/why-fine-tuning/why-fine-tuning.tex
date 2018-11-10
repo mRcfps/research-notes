@@ -1,0 +1,42 @@
+\documentclass[a4paper,12pt]{article}
+  \usepackage{inputenc}
+  \usepackage{indentfirst}
+  \title{Convolutional Neural Networks for Medical Image Analysis: Full Training or Fine Tuning?}
+  \author{Nima Tajbakhsh \emph{et al.}}
+  \date{2016}
+
+\begin{document}
+\maketitle
+
+\section{Contribution}
+
+In this paper, we systematically study knowledge transfer to medical imaging applications, making the following contributions:
+
+\begin{itemize}
+	\item We demonstrated how fine-tuning a pre-trained CNN in a layer-wise manner leads to incremental performance im-provement.
+	\item We analyzed how the availability of training samples influences the choice between pre-trained CNNs and CNNs trained from scratch.
+	\item We compared the performance of pre-trained CNNs, not only against handcrafted approaches but also against CNNs trained from scratch using medical imaging data.
+	\item We presented consistent results with conclusive outcomes for 4 distinct medical imaging applications involving clas-sification, detection, and segmentation in 3 different medical imaging modalities.
+\end{itemize}
+
+\section{Experiment Result}
+
+When using complete datasets,
+
+\[\textrm{Deep fine-tuning} \ge \textrm{Scratch} > \textrm{Shallow fine-tuning}\]
+
+When using reduced datasets,
+
+\[\textrm{Deep fine-tuning} >> \textrm{Scratch}\]
+
+\section{Conclusion}
+
+Deeply fine-tuned CNNs should always be the preferred option due to following reasons:
+
+\begin{enumerate}
+	\item Better performance.
+	\item Tolerance to reduced dataset size.
+	\item Faster convergence.
+\end{enumerate}
+
+\end{document}
