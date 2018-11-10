@@ -1,0 +1,22 @@
+\documentclass[a4paper,12pt]{article}
+  \title{ImageNet Classification with Deep Convolutional Neural Networks}
+  \author{Krizhevsky \emph{et al.}}
+  \date{2012}
+
+\begin{document}
+  \maketitle
+
+\section{Preprocessing}
+
+\begin{enumerate}
+  \item
+  Down-sample to fixed resolution $256 \times 256$.
+  \item
+  If rectangular, first rescale the image such that the shorter side is $256$, then crop out the central $256 \times 256$ patch.
+  \item
+  Subtract the mean activity over training set from each pixel.
+\end{enumerate}
+
+\section{Architecture}
+
+\end{document}
