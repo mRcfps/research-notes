@@ -10,6 +10,8 @@ Personal notes on research papers, primarily focused on deep learning and comput
 
 - [R-CNN](./computer-vision-with-deep-learning/r-cnn/r-cnn.pdf). *Girshick, Ross B. et al. “Rich Feature Hierarchies for Accurate Object Detection and Semantic Segmentation.” 2014 IEEE Conference on Computer Vision and Pattern Recognition (2014): 580-587.*
 
+- [FCN](./computer-vision-with-deep-learning/fcn/fcn.pdf). *Shelhamer, Evan et al. “Fully Convolutional Networks for Semantic Segmentation.” 2015 IEEE Conference on Computer Vision and Pattern Recognition (CVPR) (2015): 3431-3440.*
+
 ## Medical Image Processing
 
 - [Why Fine Tuning](./medical-images/why-fine-tuning/why-fine-tuning.pdf). *Tajbakhsh, Nima et al. “Convolutional Neural Networks for Medical Image Analysis: Full Training or Fine Tuning?” IEEE Transactions on Medical Imaging 35 (2016): 1299-1312.*
