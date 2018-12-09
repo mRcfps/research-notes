@@ -19,3 +19,5 @@ Personal notes on research papers, primarily focused on deep learning and comput
 - [U-Net](./medical-images/u-net/u-net.pdf). *Ronneberger, Olaf et al. “U-Net: Convolutional Networks for Biomedical Image Segmentation.” MICCAI (2015).*
 
 - [Camelyon16 Winner](./medical-images/camelyon16-winner/camelyon16-winner.pdf). *Wang, Dayong et al. “Deep Learning for Identifying Metastatic Breast Cancer.” CoRR abs/1606.05718 (2016): n. pag.*
+
+- [kU-Net & BDC-LSTM](./medical-images/kunet-bdclstm/kunet-bdclstm.pdf). *Chen, Jianxu et al. “Combining Fully Convolutional and Recurrent Neural Networks for 3D Biomedical Image Segmentation.” NIPS (2016).*
